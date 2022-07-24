@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
@@ -38,6 +39,8 @@ class CharInfo extends Component {
             .then(this.onCharLoaded)
             .catch(this.onError)
     }
+
+    
 
     onCharLoaded = (char) => {
         this.setState({
@@ -79,10 +82,15 @@ class CharInfo extends Component {
 
 const View = ({char}) => {
     const {name, description, thumbnail, homepage, wiki, comics} = char
+    let imgStyle;
+    if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+        imgStyle = {'objectFit': 'unset'};
+    }
+    
     return (
         <>
             <div className="char__basics">
-                <img src={thumbnail} alt={name}/>
+                <img src={thumbnail} alt={name} style={imgStyle}/>
                 <div>
                     <div className="char__info-name">{name}</div>
                     <div className="char__btns">
@@ -98,8 +106,11 @@ const View = ({char}) => {
             <div className="char__descr">{description}</div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
+                {comics.length > 0 ? null : 'There is no comics with this character'}
                 {
                     comics.map((item, i) => {
+                        //eslint-disable-next-line 
+                        if (i > 9) return;
                         return (
                             <li key={i} className="char__comics-item">
                                 {item.name}
@@ -110,6 +121,10 @@ const View = ({char}) => {
             </ul>
         </>
     )
+}
+
+CharInfo.propTypes = {
+    charId: PropTypes.number
 }
 
 export default CharInfo;
