@@ -8,11 +8,6 @@ import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
 
 class RandomChar extends Component {
-    constructor(props) {
-        super(props)
-        this.updateChar();
-        console.log('constructor')
-    }
     state = {
         char: {},
         loading: true,
@@ -22,8 +17,7 @@ class RandomChar extends Component {
     marvelService = new MarvelService();
 
     componentDidMount() {
-        console.log('mount')
-        // this.updateChar();
+        this.updateChar();
         // this.timerId = setInterval(this.updateChar, 3000);
     }
 
@@ -37,6 +31,11 @@ class RandomChar extends Component {
             loading: false
         })
     }
+    onCharLoading = () => {
+        this.setState({
+            loading: true
+        })
+    }
 
     onError = () => {
         this.setState({
@@ -45,10 +44,9 @@ class RandomChar extends Component {
         })
     }
 
-    updateChar = () => {
-        console.log('update')
-        
+    updateChar = () => {        
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
+        this.onCharLoading();
         this.marvelService
             .getCharacter(id)
             .then(this.onCharLoaded)
@@ -56,8 +54,6 @@ class RandomChar extends Component {
     }
 
     render() {
-        console.log('render')
-
         const {char, loading, error} = this.state;
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
